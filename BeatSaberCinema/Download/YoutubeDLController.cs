@@ -11,6 +11,8 @@ namespace BeatSaberCinema
 		private readonly string _youtubeDLFilepath = Path.Combine(UnityGame.LibraryPath, "yt-dlp.exe");
 		private readonly string _ffmpegFilepath = Path.Combine(UnityGame.LibraryPath, "ffmpeg.exe");
 		private readonly string _youtubeDLConfigFilepath = Path.Combine(UnityGame.UserDataPath, "youtube-dl.conf");
+		// YouTube extraction in recent yt-dlp versions needs a JavaScript runtime, otherwise formats go missing
+		private readonly string _denoFilepath = Path.Combine(UnityGame.LibraryPath, "deno.exe");
 
 		private bool? _librariesAvailable;
 
@@ -84,6 +86,10 @@ namespace BeatSaberCinema
 		{
 			//Use config file in UserData instead of the global yt-dl one
 			arguments += GetConfigFileArgument(_youtubeDLConfigFilepath);
+			if (File.Exists(_denoFilepath))
+			{
+				arguments += $" --js-runtimes \"deno:{_denoFilepath}\"";
+			}
 
 			var process = new Process
 			{
