@@ -13,9 +13,16 @@ namespace BeatSaberCinema.Patches
 	internal static class StandardLevelScenesTransitionSetupDataSOInit
 	{
 		[UsedImplicitly]
-		private static MethodInfo TargetMethod() => AccessTools.FirstMethod(typeof(StandardLevelScenesTransitionSetupDataSO),
-			m => m.Name == nameof(StandardLevelScenesTransitionSetupDataSO.Init) &&
-			     m.GetParameters().All(p => p.ParameterType != typeof(IBeatmapLevelData)));
+		private static MethodInfo TargetMethod() => FindInitMethod(typeof(StandardLevelScenesTransitionSetupDataSO));
+
+		// Older game versions have two Init overloads where one forwards to the other; patch only the one without
+		// IBeatmapLevelData to avoid running twice. Since 1.44 there is a single overload that takes IBeatmapLevelData.
+		internal static MethodInfo FindInitMethod(Type type)
+		{
+			var initMethods = AccessTools.GetDeclaredMethods(type).Where(m => m.Name == "Init").ToList();
+			return initMethods.FirstOrDefault(m => m.GetParameters().All(p => p.ParameterType != typeof(IBeatmapLevelData)))
+			       ?? initMethods.First();
+		}
 
 		[UsedImplicitly]
 		public static void Prefix(BeatmapLevel beatmapLevel, BeatmapKey beatmapKey, ref OverrideEnvironmentSettings overrideEnvironmentSettings)
@@ -145,9 +152,7 @@ namespace BeatSaberCinema.Patches
 	internal static class MissionLevelScenesTransitionSetupDataSOInit
 	{
 		[UsedImplicitly]
-		private static MethodInfo TargetMethod() => AccessTools.FirstMethod(typeof(MissionLevelScenesTransitionSetupDataSO),
-			m => m.Name == nameof(MissionLevelScenesTransitionSetupDataSO.Init) &&
-			     m.GetParameters().All(p => p.ParameterType != typeof(IBeatmapLevelData)));
+		private static MethodInfo TargetMethod() => StandardLevelScenesTransitionSetupDataSOInit.FindInitMethod(typeof(MissionLevelScenesTransitionSetupDataSO));
 
 		[UsedImplicitly]
 		private static void Prefix(BeatmapLevel beatmapLevel, BeatmapKey beatmapKey)
