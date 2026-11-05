@@ -5,7 +5,7 @@
 	"description": "Play videos in the background of your beatmaps",
 	"author": "Dakari",
 	"gameVersion": "1.44.1",
-	"version": "1.7.14",
+	"version": "1.7.15",
 	"dependsOn": {
 		"BSIPA": "^4.3.4",
 		"BeatSaberMarkupLanguage": "^1.11.2",
