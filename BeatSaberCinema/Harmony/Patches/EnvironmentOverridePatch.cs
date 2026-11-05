@@ -17,7 +17,10 @@ namespace BeatSaberCinema.Patches
 			m => m.Name == nameof(StandardLevelScenesTransitionSetupDataSO.Init) &&
 			     m.GetParameters().All(p => p.ParameterType != typeof(IBeatmapLevelData)));
 
+		// Run after other prefixes: Chroma (via Heck) clears the environment override for maps that suggest Chroma,
+		// which would otherwise undo the Big Mirror override
 		[UsedImplicitly]
+		[HarmonyPriority(Priority.Last)]
 		public static void Prefix(BeatmapLevel beatmapLevel, BeatmapKey beatmapKey, ref OverrideEnvironmentSettings overrideEnvironmentSettings)
 		{
 			//Wrap all of it in try/catch so an exception would not prevent the player from playing songs
