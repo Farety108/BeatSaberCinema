@@ -39,68 +39,28 @@ namespace BeatSaberCinema.Patches
 					return;
 				}
 
-				if (video.environmentName != null)
+				// "Force Big Mirror" takes priority over the mapper's environment, the video config's environment
+				// and the player's own environment override, so every map with a video uses Big Mirror
+				if (!SettingsStore.Instance.OverrideEnvironment)
 				{
-					var overrideSettings = GetOverrideEnvironmentSettingsFor(video.environmentName);
-					if (overrideSettings != null)
+					if (video.environmentName != null)
 					{
-						overrideEnvironmentSettings = overrideSettings;
-						Log.Debug($"Overriding environment to {video.environmentName} as configured");
-						return;
+						var overrideSettings = GetOverrideEnvironmentSettingsFor(video.environmentName);
+						if (overrideSettings != null)
+						{
+							overrideEnvironmentSettings = overrideSettings;
+							Log.Debug($"Overriding environment to {video.environmentName} as configured");
+							return;
+						}
 					}
-				}
 
-				if (video.EnvironmentModified)
-				{
-					Log.Debug("Environment is modified, disabling environment override");
-					overrideEnvironmentSettings = null!;
-					return;
-				}
+					if (video.EnvironmentModified)
+					{
+						Log.Debug("Environment is modified, disabling environment override");
+						overrideEnvironmentSettings = null!;
+					}
 
-				var overrideEnvironmentEnabled = SettingsStore.Instance.OverrideEnvironment;
-				if (!overrideEnvironmentEnabled)
-				{
 					Log.Debug("Cinema's environment override disallowed by user");
-					return;
-				}
-
-				var environmentWhitelist = new[]
-				{
-					"BigMirrorEnvironment",
-					"OriginsEnvironment",
-					"BTSEnvironment",
-					"KDAEnvironment",
-					"RocketEnvironment",
-					"DragonsEnvironment",
-					"Dragons2Environment",
-					"LinkinParkEnvironment",
-					"KaleidoscopeEnvironment",
-					"GlassDesertEnvironment",
-					"MonstercatEnvironment",
-					"CrabRaveEnvironment",
-					"SkrillexEnvironment",
-					"WeaveEnvironment",
-					"PyroEnvironment",
-					"EDMEnvironment",
-					"LizzoEnvironment",
-				};
-
-				var environmentName = beatmapLevel.GetEnvironmentName(beatmapKey.beatmapCharacteristic, beatmapKey.difficulty);
-				var mapEnvironmentInfoSo = VideoLoader.CustomLevelLoader._environmentsListModel.GetEnvironmentInfoBySerializedNameSafe(environmentName);
-				if (overrideEnvironmentSettings is { overrideEnvironments: true })
-				{
-					var overrideEnvironmentInfo = overrideEnvironmentSettings.GetOverrideEnvironmentInfoForType(mapEnvironmentInfoSo.environmentType);
-					if (environmentWhitelist.Contains(overrideEnvironmentInfo.serializedName))
-					{
-						Log.Debug("Environment override by user is in whitelist, allowing override");
-						return;
-					}
-				}
-
-				if (environmentWhitelist.Contains(mapEnvironmentInfoSo.serializedName))
-				{
-					Log.Debug("Environment chosen by mapper is in whitelist");
-					overrideEnvironmentSettings = null!;
 					return;
 				}
 

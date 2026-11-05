@@ -10,7 +10,7 @@
 							  hover-hint='Enable or disable video playback and other features&#xD;&#xA;&#xD;&#xA;Recommended: On'></bool-setting>
 			<dropdown-list-setting apply-on-change="true" text='Download Quality' value='quality' options='modes'></dropdown-list-setting>
 			<bool-setting apply-on-change="true" text='Force "Big Mirror" Environment' value='override-environment'
-						  hover-hint='Force the use of the Big Mirror environment for songs with videos.&#xD;&#xA;&#xD;&#xA;Recommended: On'></bool-setting>
+						  hover-hint='Always use the Big Mirror environment for songs with videos, regardless of the environment chosen by the mapper or in your settings. 360/90 degree maps keep their environment.&#xD;&#xA;&#xD;&#xA;Recommended: On'></bool-setting>
 			<bool-setting apply-on-change="true" text='Disable CustomPlatforms' value='disable-custom-platforms'
 						  hover-hint='Prevents custom platforms from loading when a video is playing.&#xD;&#xA;&#xD;&#xA;Recommended: On'></bool-setting>
 			<bool-setting apply-on-change="true" text='Rotate in 90/360 maps' value='enable-360-rotation'
